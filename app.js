@@ -1,6 +1,11 @@
-const express = require('express')
+const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express()
 const port = 3000;
+
+app.use(bodyParser.json());
+
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
@@ -34,7 +39,26 @@ app.get('/mensagens/:id', (req, res) => {
     const id = req.params.id - 1;
     const mensagem = mensagens[id];
     res.send(mensagem);
-})
+});
+
+// [POST] /mensagens -  Cria uma nova mensagem
+app.post('/mensagens', (req, res) => {
+    const mensagem = req.body.texto;
+
+    mensagens.push(mensagem); //ADICIONANDO UMA MENSAGEM NO ARRAY
+
+    res.send(`Mensagem criada com sucesso: ${mensagem}.`);
+});
+
+// [PUT] /mensagens/{id} - Atualiza um mensagem pelo ID
+app.put('/mensagens/:id', (req, res) => {
+    const id = req.params.id -1;
+    const mensagem = req.body.texto;
+
+    mensagens[id] = mensagem;
+
+    res.send(`Mensagem atualizada com sucesso: ${mensagem}`);
+});
 
 app.listen(port, () => {
     console.info(`App rodando em http://localhost:${port}`)
